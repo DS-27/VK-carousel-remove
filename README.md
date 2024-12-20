@@ -1,9 +1,15 @@
 Tampermonkey script for removing a carousel of images from VK.
 
-At the moment, it removes all elements of the carousel and splits the images in the post into two rows. In the future, it is planned to adjust the grid to the number of images.
-
+Current functionality:
+- Remove carousel elements (counter and arrows)
+- Replace carousel with 2 or 3 column table
+- Replace wall style from "feed_wall—no-islands" to "feed_wall" to return separation between posts
+  
 -----------
 
 Скрипт на Tampermonkey для удаления карусели картинок из ВК. 
 
-На данный момент удаляет все элементы карусели и разбивает картинки в посте на два ряда. В дальнейшейм планируется подстраивать сетку под количество картинок
+Нынешний функционал:
+- Удаление элементов карусели (счётчик и стрелочки)
+- Замена карусели на таблицу в 2 или 3 столбца
+- Замена стиля стены с "feed_wall—no-islands" на "feed_wall" для возврата разделения между постами
