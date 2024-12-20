@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Фикс нового дизайна ВК
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.4
 // @description  Делает изменения в новом дизайне ВКонтакте
 // @author       DS27
 // @match        https://vk.com/*
@@ -61,11 +61,17 @@
         hideElements('button.vkitBaseGallery__arrow--1CXpf');
         hideElements('span.vkitContentBadge__root--i6wr7');
         modifyCarousel();
+
+        // Задача 3: Изменить класс div с feed_wall или clear_fix feed_wall
+        document.querySelectorAll('.feed_wall--no-islands, .clear_fix.feed_wall').forEach(el => {
+            el.classList.remove('feed_wall--no-islands', 'clear_fix');
+            el.classList.add('feed_wall');
+        });
     }).observe(document.body, { childList: true, subtree: true });
 
-    // Задача 3: Изменить класс div с feed_wall
-    document.querySelectorAll('.feed_wall--no-islands').forEach(el => {
-        el.classList.remove('feed_wall--no-islands');
+    // Задача 3: Изменить класс div с feed_wall или clear_fix feed_wall
+    document.querySelectorAll('.feed_wall--no-islands, .clear_fix.feed_wall').forEach(el => {
+        el.classList.remove('feed_wall--no-islands', 'clear_fix');
         el.classList.add('feed_wall');
     });
 })();
