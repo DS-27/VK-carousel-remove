@@ -1,8 +1,9 @@
 // ==UserScript==
-// @name         VK-carousel-remove-script
+// @name         Фикс нового дизайна ВК
 // @namespace    http://tampermonkey.net/
-// @version      1.1
-// @description  Скрипт для удаления карусели картинок из ВК
+// @version      0.2
+// @description  Делает изменения в новом дизайне ВКонтакте
+// @author       DS27
 // @match        https://vk.com/*
 // @grant        none
 // ==/UserScript==
@@ -10,79 +11,61 @@
 (function() {
     'use strict';
 
-    // Функция для удаления элементов с заданными классами внутри .post_content
-    function removeElementsByClass(classes, container) {
-        classes.forEach(className => {
-            container.querySelectorAll(`.${className}`).forEach(element => element.remove());
+    // Функция для скрытия элементов
+    function hideElements(selector) {
+        document.querySelectorAll(selector).forEach(el => {
+            el.style.width = '0';
+            el.style.height = '0';
+            el.style.display = 'none';
         });
     }
 
-    // Функция для настройки стиля галереи внутри .post_content
-    function setGalleryInnerStyle(container) {
-        const galleryInner = container.querySelector('.ui_gallery__inner.ui_gallery__inner--withTransitions');
-        if (galleryInner) {
-            galleryInner.style.display = 'grid';
-            galleryInner.style.gridTemplateColumns = 'repeat(auto-fill, minmax(200px, 1fr))';
+    // Задача 1: Скрыть ненужные кнопки и бэджи
+    hideElements('button.vkitBaseGallery__arrow--1CXpf');
+    hideElements('span.vkitContentBadge__root--i6wr7');
 
-            // Определяем количество изображений
-            const itemCount = galleryInner.childElementCount;
+    // Функция для изменения класса и стилей элементов
+    function modifyCarousel() {
+        document.querySelectorAll('.vkitBaseGallery__layer--JNMtq').forEach(el => {
+            el.className = 'Carusel_delited';
+            el.style.display = 'flex';
+            el.style.flexWrap = 'wrap';
 
-            // Рассчитываем количество строк для создания квадратной сетки
-            const columns = Math.ceil(Math.sqrt(itemCount));
-            const rows = Math.ceil(itemCount / columns);
+            // Подсчитываем количество дочерних элементов
+            const slideCount = el.querySelectorAll('.vkitBaseGallery__slide--JhgoZ').length;
 
-            // Устанавливаем количество строк
-            galleryInner.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-        }
-    }
-
-    // Функция для замены классов на пустые значения внутри .post_content
-    function replaceClasses(classes, container) {
-        classes.forEach(className => {
-            container.querySelectorAll(`.${className}`).forEach(element => element.className = '');
-        });
-    }
-
-    // Основная функция для обработки контента внутри .post_content
-    function processContent() {
-        document.querySelectorAll('.post_content').forEach(container => {
-            // Удаляем элементы с указанными классами
-            removeElementsByClass([
-                'ui_gallery__arrow',
-                'ui_gallery__arrow_left',
-                'PrimaryAttachmentCarousel__arrow',
-                'PrimaryAttachmentCarousel__bullets',
-                'ui_gallery__arrow ui_gallery__arrow_right',
-                'PrimaryAttachmentCarousel__arrow'
-            ], container);
-
-            // Устанавливаем стиль для галереи
-            setGalleryInnerStyle(container);
-
-            // Заменяем классы на пустые значения
-            replaceClasses([
-                'ui_gallery__inner_cont',
-                'ui_gallery_item',
-                'PrimaryAttachmentCarousel__item'
-            ], container);
-        });
-    }
-
-    // Запускаем обработку при загрузке страницы
-    processContent();
-
-    // Наблюдаем за изменениями в DOM и динамически обрабатываем новый контент
-    const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-            if (mutation.addedNodes.length > 0) {
-                processContent();
+            // Устанавливаем ширину для каждого слайда в зависимости от количества
+            if (slideCount <= 4) {
+                el.style.flexDirection = 'row';
+                el.style.alignItems = 'stretch';
+                el.querySelectorAll('.vkitBaseGallery__slide--JhgoZ').forEach(slide => {
+                    slide.style.width = '50%';
+                    slide.style.boxSizing = 'border-box';
+                });
+            } else if (slideCount <= 10) {
+                el.style.flexDirection = 'row';
+                el.style.alignItems = 'stretch';
+                el.querySelectorAll('.vkitBaseGallery__slide--JhgoZ').forEach(slide => {
+                    slide.style.width = '33.33%';
+                    slide.style.boxSizing = 'border-box';
+                });
             }
         });
-    });
+    }
 
-    // Настройка наблюдателя за всем документом
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
+    // Задача 2: Изменить класс и стили каруселей
+    modifyCarousel();
+
+    // Слушатель для динамически загружаемого контента
+    new MutationObserver(() => {
+        hideElements('button.vkitBaseGallery__arrow--1CXpf');
+        hideElements('span.vkitContentBadge__root--i6wr7');
+        modifyCarousel();
+    }).observe(document.body, { childList: true, subtree: true });
+
+    // Задача 3: Изменить класс div с feed_wall
+    document.querySelectorAll('.feed_wall--no-islands').forEach(el => {
+        el.classList.remove('feed_wall--no-islands');
+        el.classList.add('feed_wall');
     });
 })();
