@@ -1,0 +1,12 @@
+{
+    "name": "Фикс нового дизайна ВК",
+    "version": "0.8",
+    "description": "Исправляет проблемы в новом дизайне VK",
+    "content_scripts": [
+        {
+            "matches": ["https://vk.com/*"],
+            "js": ["VK-carousel-remove.js"]
+        }
+    ],
+    "update_url": "https://raw.githubusercontent.com/DS-27/VK-carousel-remove/master/manifest.json"
+}
