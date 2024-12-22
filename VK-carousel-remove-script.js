@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Фикс нового дизайна ВК
 // @namespace    http://tampermonkey.net/
-// @version      0.8
+// @version      0.9
 // @description  Исправляет проблемы в новом дизайне VK
 // @author       DS27
 // @match        https://vk.com/*
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/DS-27/VK-carousel-remove/master/VK-carousel-remove.js
+// @updateURL    https://raw.githubusercontent.com/DS-27/VK-carousel-remove/refs/heads/main/VK-carousel-remove-script.js
 // ==/UserScript==
 
 (function() {
@@ -38,12 +38,7 @@
         el.style.marginTop = '50px'; // Добавляем верхний отступ
     });
 
-    // Добавляем стили к элементу с классом vkitBaseGallery__viewport--oBrr7
-    document.querySelectorAll('.vkitBaseGallery__viewport--oBrr7').forEach(el => {
-        el.style.width = '30%';
-    });
-
-    // Функция для изменения классов и стилей каруселей
+    // Функция для изменения класса и стилей каруселей
     function modifyCarousels() {
         const carousels = document.querySelectorAll('.vkitBaseGallery__layer--JNMtq');
         carousels.forEach(carousel => {
@@ -92,6 +87,20 @@
         document.querySelectorAll('.feed_wall--no-islands, .clear_fix.feed_wall').forEach(el => {
             el.classList.remove('feed_wall--no-islands', 'clear_fix');
             el.classList.add('feed_wall');
+        });
+    }
+
+    function modifyCarouselViewport() {
+        const viewports = document.querySelectorAll('.vkitBaseGallery__viewport--oBrr7');
+        viewports.forEach(viewport => {
+            if (viewport.parentElement.classList.contains('vkitCarousel__carousel--DOfcX') &&
+                viewport.parentElement.classList.contains('vkitCarousel__withOffset--OdJtQ') &&
+                viewport.parentElement.classList.contains('vkitBaseGallery__host--Gq3V7') &&
+                viewport.parentElement.classList.contains('vkitBaseGallery__alignCenter--WeQNT') &&
+                viewport.parentElement.classList.contains('vkitBaseGallery__draggable--DUONP') &&
+                viewport.parentElement.classList.contains('vkuiRootComponent')) {
+                viewport.style.width = '30%';
+            }
         });
     }
 
@@ -149,11 +158,9 @@
             el.style.height = 'auto';
             el.style.marginTop = '50px'; // Добавляем верхний отступ
         });
-        document.querySelectorAll('.vkitBaseGallery__viewport--oBrr7').forEach(el => {
-            el.style.width = '30%';
-        });
         modifyCarousels();
         modifyFeedWall();
+        modifyCarouselViewport();
         setWidths(); // Устанавливаем ширины после обнаружения изменений
     }).observe(document.body, { childList: true, subtree: true });
 
@@ -168,9 +175,6 @@
         el.style.width = '900px';
         el.style.height = 'auto';
         el.style.marginTop = '50px'; // Добавляем верхний отступ
-    });
-    document.querySelectorAll('.vkitBaseGallery__viewport--oBrr7').forEach(el => {
-        el.style.width = '30%';
     });
     modifyCarousels();
     modifyFeedWall();
