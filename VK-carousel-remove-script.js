@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Фикс нового дизайна ВК
 // @namespace    http://tampermonkey.net/
-// @version      0.9
+// @version      0.91
 // @description  Исправляет проблемы в новом дизайне VK
 // @author       DS27
 // @match        https://vk.com/*
@@ -38,24 +38,30 @@
         el.style.marginTop = '50px'; // Добавляем верхний отступ
     });
 
-    // Функция для изменения класса и стилей каруселей
+    // Функция для изменения класса и стилей элементов
     function modifyCarousels() {
-        const carousels = document.querySelectorAll('.vkitBaseGallery__layer--JNMtq');
-        carousels.forEach(carousel => {
-            carousel.classList.replace('vkitBaseGallery__layer--JNMtq', 'Carusel_delited');
-            carousel.style.removeProperty('display'); // Удаляем заданные свойства стиля
-            carousel.style.width = '100%'; // Задаем ширину контейнера
-            const children = Array.from(carousel.children);
-            if (children.length > 0) {
-                children.forEach((child, index) => {
-                    if (index % 2 === 0) {
-                        child.style.setProperty('display', 'inline-block');
-                        child.style.setProperty('width', '49%');
-                        child.style.setProperty('margin-right', '1%');
-                    } else {
-                        child.style.setProperty('display', 'inline-block');
-                        child.style.setProperty('width', '49%');
-                    }
+        document.querySelectorAll('.vkitBaseGallery__layer--JNMtq').forEach(el => {
+            el.className = 'Carusel_delited';
+            el.style.display = 'flex';
+            el.style.flexWrap = 'wrap';
+
+            // Подсчитываем количество дочерних элементов
+            const slideCount = el.querySelectorAll('.vkitBaseGallery__slide--JhgoZ').length;
+
+            // Устанавливаем ширину для каждого слайда в зависимости от количества
+            if (slideCount <= 4) {
+                el.style.flexDirection = 'row';
+                el.style.alignItems = 'stretch';
+                el.querySelectorAll('.vkitBaseGallery__slide--JhgoZ').forEach(slide => {
+                    slide.style.width = '50%';
+                    slide.style.boxSizing = 'border-box';
+                });
+            } else if (slideCount <= 10) {
+                el.style.flexDirection = 'row';
+                el.style.alignItems = 'stretch';
+                el.querySelectorAll('.vkitBaseGallery__slide--JhgoZ').forEach(slide => {
+                    slide.style.width = '33.33%';
+                    slide.style.boxSizing = 'border-box';
                 });
             }
         });
