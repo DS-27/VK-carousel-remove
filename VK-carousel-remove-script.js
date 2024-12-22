@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Фикс нового дизайна ВК
 // @namespace    http://tampermonkey.net/
-// @version      0.91
+// @version      0.92
 // @description  Исправляет проблемы в новом дизайне VK
 // @author       DS27
 // @match        https://vk.com/*
@@ -73,17 +73,20 @@
     // Функция для изменения ширины элементов с id="page_layout" и id="page_body"
     function setWidths() {
         const pageLayout = document.getElementById('page_layout');
-        if (pageLayout) {
-            const layoutWidth = document.getElementById('layout_width_input').value;
-            pageLayout.style.width = `${layoutWidth}%`;
-            pageLayout.style.margin = '0 auto'; // Центрируем контейнер
-        }
-
         const pageBody = document.getElementById('page_body');
-        if (pageBody) {
-            const bodyWidth = document.getElementById('body_width_input').value;
-            pageBody.style.width = `${bodyWidth}%`;
-            pageBody.style.margin = '0 auto'; // Центрируем контейнер
+
+        if (pageLayout && pageBody) {
+            const layoutWidth = parseInt(document.getElementById('layout_width_input').value, 10);
+            const windowWidth = window.innerWidth;
+
+            const pageLayoutPx = (windowWidth * layoutWidth) / 100;
+            const pageBodyPx = pageLayoutPx - 160;
+
+            pageLayout.style.width = `${pageLayoutPx}px`;
+            pageBody.style.width = `${pageBodyPx}px`;
+
+            pageLayout.style.margin = '0 auto'; // Центрируем контейнер
+            pageBody.style.margin = '0 auto';
             pageBody.style.paddingTop = '50px'; // Добавляем верхний отступ
         }
     }
@@ -110,7 +113,7 @@
         });
     }
 
-    // Функция для добавления полей ввода
+    // Функция для добавления поля ввода
     function addInputFields() {
         const sideBarInner = document.getElementById('side_bar_inner');
         if (sideBarInner) {
@@ -126,28 +129,15 @@
             const layoutWidthInput = document.createElement('input');
             layoutWidthInput.id = 'layout_width_input';
             layoutWidthInput.type = 'number';
-            layoutWidthInput.value = '70';
+            layoutWidthInput.value = '70'; // Начальное значение
             layoutWidthInput.style.width = '50%'; // Устанавливаем ширину инпута
             layoutWidthInput.style.borderRadius = '10px'; // Устанавливаем скругление инпута
             inputForm.appendChild(layoutWidthInput);
-
-            const bodyWidthLabel = document.createElement('label');
-            bodyWidthLabel.textContent = 'Ширина ленты (%): ';
-            inputForm.appendChild(bodyWidthLabel);
-
-            const bodyWidthInput = document.createElement('input');
-            bodyWidthInput.id = 'body_width_input';
-            bodyWidthInput.type = 'number';
-            bodyWidthInput.value = '87';
-            bodyWidthInput.style.width = '50%'; // Устанавливаем ширину инпута
-            bodyWidthInput.style.borderRadius = '10px'; // Устанавливаем скругление инпута
-            inputForm.appendChild(bodyWidthInput);
 
             sideBarInner.appendChild(inputForm);
 
             // Добавляем обработчики событий на изменение значений
             layoutWidthInput.addEventListener('input', setWidths);
-            bodyWidthInput.addEventListener('input', setWidths);
         }
     }
 
