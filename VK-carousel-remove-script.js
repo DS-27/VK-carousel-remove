@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name         Фикс нового дизайна ВК
 // @namespace    http://tampermonkey.net/
-// @version      0.6
-// @description  Делает изменения в новом дизайне ВКонтакте
+// @version      0.8
+// @description  Исправляет проблемы в новом дизайне VK
 // @author       DS27
 // @match        https://vk.com/*
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/DS-27/VK-carousel-remove/master/VK-carousel-remove.js
 // ==/UserScript==
 
 (function() {
@@ -24,37 +25,49 @@
     hideElements('button.vkitBaseGallery__arrow--1CXpf');
     hideElements('span.vkitContentBadge__root--i6wr7');
 
-    // Функция для изменения класса и стилей элементов
-    function modifyCarousel() {
-        document.querySelectorAll('.vkitBaseGallery__layer--JNMtq').forEach(el => {
-            el.className = 'Carusel_delited';
-            el.style.display = 'flex';
-            el.style.flexWrap = 'wrap';
+    // Добавляем стили к элементам с id "wk_box", "wk_content"
+    document.querySelectorAll('#wk_box, #wk_content').forEach(el => {
+        el.style.width = '900px';
+        el.style.height = 'auto';
+    });
 
-            // Подсчитываем количество дочерних элементов
-            const slideCount = el.querySelectorAll('.vkitBaseGallery__slide--JhgoZ').length;
+    // Добавляем стили к элементам с классами
+    document.querySelectorAll('.popup_box_container.popup_box_container--no-body.popup_box_container--no-shadow, .vkitModalBox__container--uATK0.vkuiInternalModalBox').forEach(el => {
+        el.style.width = '900px';
+        el.style.height = 'auto';
+        el.style.marginTop = '50px'; // Добавляем верхний отступ
+    });
 
-            // Устанавливаем ширину для каждого слайда в зависимости от количества
-            if (slideCount <= 4) {
-                el.style.flexDirection = 'row';
-                el.style.alignItems = 'stretch';
-                el.querySelectorAll('.vkitBaseGallery__slide--JhgoZ').forEach(slide => {
-                    slide.style.width = '50%';
-                    slide.style.boxSizing = 'border-box';
-                });
-            } else if (slideCount <= 10) {
-                el.style.flexDirection = 'row';
-                el.style.alignItems = 'stretch';
-                el.querySelectorAll('.vkitBaseGallery__slide--JhgoZ').forEach(slide => {
-                    slide.style.width = '33.33%';
-                    slide.style.boxSizing = 'border-box';
+    // Добавляем стили к элементу с классом vkitBaseGallery__viewport--oBrr7
+    document.querySelectorAll('.vkitBaseGallery__viewport--oBrr7').forEach(el => {
+        el.style.width = '30%';
+    });
+
+    // Функция для изменения классов и стилей каруселей
+    function modifyCarousels() {
+        const carousels = document.querySelectorAll('.vkitBaseGallery__layer--JNMtq');
+        carousels.forEach(carousel => {
+            carousel.classList.replace('vkitBaseGallery__layer--JNMtq', 'Carusel_delited');
+            carousel.style.removeProperty('display'); // Удаляем заданные свойства стиля
+            carousel.style.width = '100%'; // Задаем ширину контейнера
+            const children = Array.from(carousel.children);
+            if (children.length > 0) {
+                children.forEach((child, index) => {
+                    if (index % 2 === 0) {
+                        child.style.setProperty('display', 'inline-block');
+                        child.style.setProperty('width', '49%');
+                        child.style.setProperty('margin-right', '1%');
+                    } else {
+                        child.style.setProperty('display', 'inline-block');
+                        child.style.setProperty('width', '49%');
+                    }
                 });
             }
         });
     }
 
     // Задача 2: Изменить класс и стили каруселей
-    modifyCarousel();
+    modifyCarousels();
 
     // Функция для изменения ширины элементов с id="page_layout" и id="page_body"
     function setWidths() {
@@ -74,7 +87,7 @@
         }
     }
 
-    // Задача 3: Изменить класс div с feed_wall или clear_fix feed_wall
+    // Задача 3: Изменить класс div с feed_wall--no-islands и заменять его на feed_wall
     function modifyFeedWall() {
         document.querySelectorAll('.feed_wall--no-islands, .clear_fix.feed_wall').forEach(el => {
             el.classList.remove('feed_wall--no-islands', 'clear_fix');
@@ -104,7 +117,7 @@
             inputForm.appendChild(layoutWidthInput);
 
             const bodyWidthLabel = document.createElement('label');
-            bodyWidthLabel.textContent = ' Ширина ленты (%): ';
+            bodyWidthLabel.textContent = 'Ширина ленты (%): ';
             inputForm.appendChild(bodyWidthLabel);
 
             const bodyWidthInput = document.createElement('input');
@@ -127,7 +140,19 @@
     new MutationObserver(() => {
         hideElements('button.vkitBaseGallery__arrow--1CXpf');
         hideElements('span.vkitContentBadge__root--i6wr7');
-        modifyCarousel();
+        document.querySelectorAll('#wk_box, #wk_content').forEach(el => {
+            el.style.width = '900px';
+            el.style.height = 'auto';
+        });
+        document.querySelectorAll('.popup_box_container.popup_box_container--no-body.popup_box_container--no-shadow, .vkitModalBox__container--uATK0.vkuiInternalModalBox').forEach(el => {
+            el.style.width = '900px';
+            el.style.height = 'auto';
+            el.style.marginTop = '50px'; // Добавляем верхний отступ
+        });
+        document.querySelectorAll('.vkitBaseGallery__viewport--oBrr7').forEach(el => {
+            el.style.width = '30%';
+        });
+        modifyCarousels();
         modifyFeedWall();
         setWidths(); // Устанавливаем ширины после обнаружения изменений
     }).observe(document.body, { childList: true, subtree: true });
@@ -135,7 +160,19 @@
     // Инициализируем изменения при загрузке страницы
     hideElements('button.vkitBaseGallery__arrow--1CXpf');
     hideElements('span.vkitContentBadge__root--i6wr7');
-    modifyCarousel();
+    document.querySelectorAll('#wk_box, #wk_content').forEach(el => {
+        el.style.width = '900px';
+        el.style.height = 'auto';
+    });
+    document.querySelectorAll('.popup_box_container.popup_box_container--no-body.popup_box_container--no-shadow, .vkitModalBox__container--uATK0.vkuiInternalModalBox').forEach(el => {
+        el.style.width = '900px';
+        el.style.height = 'auto';
+        el.style.marginTop = '50px'; // Добавляем верхний отступ
+    });
+    document.querySelectorAll('.vkitBaseGallery__viewport--oBrr7').forEach(el => {
+        el.style.width = '30%';
+    });
+    modifyCarousels();
     modifyFeedWall();
     addInputFields(); // Добавляем поля ввода
     setWidths(); // Устанавливаем начальные ширины
