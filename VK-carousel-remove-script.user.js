@@ -6,7 +6,8 @@
 // @author       DS27
 // @match        https://vk.com/*
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/DS-27/VK-carousel-remove/refs/heads/main/VK-carousel-remove-script.js
+// @updateURL    https://raw.githubusercontent.com/DS-27/VK-carousel-remove/refs/heads/main/VK-carousel-remove-script.user.js
+// @downloadURL    https://raw.githubusercontent.com/DS-27/VK-carousel-remove/refs/heads/main/VK-carousel-remove-script.user.js
 // ==/UserScript==
 
 (function() {
