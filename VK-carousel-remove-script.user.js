@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Фикс нового дизайна ВК
 // @namespace    http://tampermonkey.net/
-// @version      0.92
+// @version      0.94
 // @description  Исправляет проблемы в новом дизайне VK
 // @author       DS27
 // @match        https://vk.com/*
@@ -130,15 +130,50 @@
             const layoutWidthInput = document.createElement('input');
             layoutWidthInput.id = 'layout_width_input';
             layoutWidthInput.type = 'number';
-            layoutWidthInput.value = '70'; // Начальное значение
+            layoutWidthInput.value = '80'; // Начальное значение
             layoutWidthInput.style.width = '50%'; // Устанавливаем ширину инпута
             layoutWidthInput.style.borderRadius = '10px'; // Устанавливаем скругление инпута
             inputForm.appendChild(layoutWidthInput);
+
+            const columnCountLabel = document.createElement('label');
+            columnCountLabel.textContent = 'Количество столбцов: ';
+            inputForm.appendChild(columnCountLabel);
+
+            const columnCountInput = document.createElement('input');
+            columnCountInput.id = 'column_count_input';
+            columnCountInput.type = 'number';
+            columnCountInput.value = '2'; // Начальное значение
+            columnCountInput.style.width = '50%'; // Устанавливаем ширину инпута
+            columnCountInput.style.borderRadius = '10px'; // Устанавливаем скругление инпута
+            inputForm.appendChild(columnCountInput);
 
             sideBarInner.appendChild(inputForm);
 
             // Добавляем обработчики событий на изменение значений
             layoutWidthInput.addEventListener('input', setWidths);
+            columnCountInput.addEventListener('input', updateGridStyles);
+        }
+    }
+
+    // Функция для обновления стилей сетки при изменении количества столбцов
+    function updateGridStyles() {
+        const columns = document.getElementById('column_count_input').value;
+        if (columns > 0) {
+            const pageWallPosts = document.getElementById('page_wall_posts');
+            const feedRows = document.getElementById('feed_rows');
+            const wideСolumn = document.getElementById('wide_column');
+
+            if (pageWallPosts) {
+                pageWallPosts.style.display = 'grid';
+                pageWallPosts.style.gridTemplateColumns = `repeat(${columns}, calc((100% - (${columns} - 1) * 15px) / ${columns}))`;
+                pageWallPosts.style.gap = '0px 15px';
+            }
+
+            if (feedRows) {
+                feedRows.style.display = 'grid';
+                feedRows.style.gridTemplateColumns = `repeat(${columns}, calc((100% - (${columns} - 1) * 15px) / ${columns}))`;
+                feedRows.style.gap = '0px 15px';
+            }
         }
     }
 
@@ -159,6 +194,12 @@
         modifyFeedWall();
         modifyCarouselViewport();
         setWidths(); // Устанавливаем ширины после обнаружения изменений
+        updateGridStyles(); // Обновляем стили сетки
+
+        const pageWallPosts = document.getElementById('page_wall_posts');
+        if (pageWallPosts) {
+            pageWallPosts.classList.remove('wall_posts', 'own', 'mark_top');
+        }
     }).observe(document.body, { childList: true, subtree: true });
 
     // Инициализируем изменения при загрузке страницы
@@ -177,4 +218,11 @@
     modifyFeedWall();
     addInputFields(); // Добавляем поля ввода
     setWidths(); // Устанавливаем начальные ширины
+    updateGridStyles(); // Обновляем стили сетки
+
+    const pageWallPosts = document.getElementById('page_wall_posts');
+    if (pageWallPosts) {
+        pageWallPosts.classList.remove('wall_posts', 'own', 'mark_top');
+    }
+
 })();
