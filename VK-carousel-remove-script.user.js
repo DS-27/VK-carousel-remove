@@ -136,7 +136,7 @@
             inputForm.appendChild(layoutWidthInput);
 
             const columnCountLabel = document.createElement('label');
-            columnCountLabel.textContent = 'Количество столбцов: ';
+            columnCountLabel.textContent = 'Количество столбцов в ленте: ';
             inputForm.appendChild(columnCountLabel);
 
             const columnCountInput = document.createElement('input');
@@ -226,3 +226,4 @@
     }
 
 })();
+
