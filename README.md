@@ -8,7 +8,7 @@ Current functionality:
   
 -----------
 
-Скрипт на Tampermonkey для удаления карусели картинок из ВК. 
+Скрипт на Tampermonkey для удаления карусели картинок из ВК.
 Для установки или обновления скрипта просто нажмите [установить](https://github.com/DS-27/VK-carousel-remove/raw/refs/heads/main/VK-carousel-remove-script.user.js)
 
 Нынешний функционал:
