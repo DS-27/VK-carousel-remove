@@ -1,5 +1,5 @@
 Tampermonkey script for removing a carousel of images from VK.
-To install or update the script, simply click [Install] (https://github.com/DS-27/VK-carousel-remove/raw/refs/heads/main/VK-carousel-remove-script.user.js)
+To install or update the script, simply click [Install](https://github.com/DS-27/VK-carousel-remove/raw/refs/heads/main/VK-carousel-remove-script.user.js)
 
 Current functionality:
 - Remove carousel elements (counter and arrows)
@@ -9,7 +9,7 @@ Current functionality:
 -----------
 
 Скрипт на Tampermonkey для удаления карусели картинок из ВК. 
-Для установки или обновления скрипта просто нажмите [установить] (https://github.com/DS-27/VK-carousel-remove/raw/refs/heads/main/VK-carousel-remove-script.user.js)
+Для установки или обновления скрипта просто нажмите [установить](https://github.com/DS-27/VK-carousel-remove/raw/refs/heads/main/VK-carousel-remove-script.user.js)
 
 Нынешний функционал:
 - Удаление элементов карусели (счётчик и стрелочки)
