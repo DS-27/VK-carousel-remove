@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Фикс нового дизайна ВК
 // @namespace    http://tampermonkey.net/
-// @version      0.94
+// @version      0.95
 // @description  Исправляет проблемы в новом дизайне VK
 // @author       DS27
 // @match        https://vk.com/*
@@ -130,7 +130,7 @@
             const layoutWidthInput = document.createElement('input');
             layoutWidthInput.id = 'layout_width_input';
             layoutWidthInput.type = 'number';
-            layoutWidthInput.value = '80'; // Начальное значение
+            layoutWidthInput.value = localStorage.getItem('layout_width') || '80'; // Загружаем значение из localStorage
             layoutWidthInput.style.width = '50%'; // Устанавливаем ширину инпута
             layoutWidthInput.style.borderRadius = '10px'; // Устанавливаем скругление инпута
             inputForm.appendChild(layoutWidthInput);
@@ -142,7 +142,7 @@
             const columnCountInput = document.createElement('input');
             columnCountInput.id = 'column_count_input';
             columnCountInput.type = 'number';
-            columnCountInput.value = '2'; // Начальное значение
+            columnCountInput.value = localStorage.getItem('column_count') || '2'; // Загружаем значение из localStorage
             columnCountInput.style.width = '50%'; // Устанавливаем ширину инпута
             columnCountInput.style.borderRadius = '10px'; // Устанавливаем скругление инпута
             inputForm.appendChild(columnCountInput);
@@ -150,8 +150,14 @@
             sideBarInner.appendChild(inputForm);
 
             // Добавляем обработчики событий на изменение значений
-            layoutWidthInput.addEventListener('input', setWidths);
-            columnCountInput.addEventListener('input', updateGridStyles);
+            layoutWidthInput.addEventListener('input', function() {
+                localStorage.setItem('layout_width', this.value);
+                setWidths();
+            });
+            columnCountInput.addEventListener('input', function() {
+                localStorage.setItem('column_count', this.value);
+                updateGridStyles();
+            });
         }
     }
 
@@ -226,4 +232,3 @@
     }
 
 })();
-
